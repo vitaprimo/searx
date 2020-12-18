@@ -26,3 +26,10 @@ dist/
 local/
 gh-pages/
 searx.egg-info/
+.DS_Store
+searx/.DS_Store
+searx/static/.DS_Store
+searx/static/logos/.DS_Store
+searx/static/logos/compressed/.DS_Store
+searx/static/themes/.DS_Store
+searx/static/themes/oscar/img/.DS_Store
