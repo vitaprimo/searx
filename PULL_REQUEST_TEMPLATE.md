@@ -7,7 +7,7 @@ Files included: PNG exports at 400DPI + RGB/16 + alpha channel passed through a 
 
 ## Why is this change important?
 
-It's probably not, it's a refresh of the current logo but now a little less lopsided while still keeping emphasis on the X (as "X marks the spot"; one of the things that I thught the huge X might mean) but using a cursor to (1) literally point to it and (2) be part of it. The colors where taken from the original logo to honor the authors in addition of a new set to pick from.
+It's probably not, it's a refresh of the current logo but now a little less lopsided while still keeping emphasis on the X (as "X marks the spot"; one of the things that I thought the huge X might mean) but using a cursor to literally point to it and be part of it. The colors where taken from the original logo to honor the authors in addition of a new set to pick from.
 
   The cursor was originally black but it made the X look like a badly-dimmensioned lowercase Y.
 
