@@ -21,7 +21,7 @@ There's a preview file but there's really nothing to test as no code was modifie
 
 I fell in love with the project but since I can't code to save my life, hopefully this is good enough, it'd be awesome to help even if the files aren't implemented and left somewhere as a second or third option.
 
-I can always revise things if it's good but not there yet. :)
+I can always revise things if it's good but "not there yet." :)
 
 ## Related issues
 
