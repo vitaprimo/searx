@@ -24,9 +24,9 @@ def load_yaml(file_name):
         with open(file_name, 'r', encoding='utf-8') as settings_yaml:
             return yaml.safe_load(settings_yaml)
     except IOError as e:
-        raise SearxSettingsException(e, file_name)
+        raise SearxSettingsException(e, file_name) from e
     except yaml.YAMLError as e:
-        raise SearxSettingsException(e, file_name)
+        raise SearxSettingsException(e, file_name) from e
 
 
 def get_default_settings_path():
@@ -57,7 +57,7 @@ def update_settings(default_settings, user_settings):
     # merge everything except the engines
     for k, v in user_settings.items():
         if k not in ('use_default_settings', 'engines'):
-            if k in default_settings:
+            if k in default_settings and isinstance(v, Mapping):
                 update_dict(default_settings[k], v)
             else:
                 default_settings[k] = v

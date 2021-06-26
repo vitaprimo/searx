@@ -20,6 +20,8 @@ def name_to_iso4217(name):
     global CURRENCIES
     name = normalize_name(name)
     currency = CURRENCIES['names'].get(name, [name])
+    if isinstance(currency, str):
+        return currency
     return currency[0]
 
 
@@ -55,3 +57,13 @@ class OnlineCurrencyProcessor(OnlineProcessor):
         params['from_name'] = iso4217_to_name(from_currency, 'en')
         params['to_name'] = iso4217_to_name(to_currency, 'en')
         return params
+
+    def get_default_tests(self):
+        tests = {}
+
+        tests['currency'] = {
+            'matrix': {'query': '1337 usd in rmb'},
+            'result_container': ['has_answer'],
+        }
+
+        return tests

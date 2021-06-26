@@ -28,7 +28,9 @@ from searx.external_bang import get_bang_url
 from searx.results import ResultContainer
 from searx import logger
 from searx.plugins import plugins
+from searx.search.models import EngineRef, SearchQuery
 from searx.search.processors import processors, initialize as initialize_processors
+from searx.search.checker import initialize as initialize_checker
 
 
 logger = logger.getChild('search')
@@ -45,68 +47,11 @@ else:
         sys.exit(1)
 
 
-def initialize(settings_engines=None):
+def initialize(settings_engines=None, enable_checker=False):
     settings_engines = settings_engines or settings['engines']
     initialize_processors(settings_engines)
-
-
-class EngineRef:
-
-    __slots__ = 'name', 'category', 'from_bang'
-
-    def __init__(self, name: str, category: str, from_bang: bool=False):
-        self.name = name
-        self.category = category
-        self.from_bang = from_bang
-
-    def __repr__(self):
-        return "EngineRef({!r}, {!r}, {!r})".format(self.name, self.category, self.from_bang)
-
-    def __eq__(self, other):
-        return self.name == other.name and self.category == other.category and self.from_bang == other.from_bang
-
-
-class SearchQuery:
-    """container for all the search parameters (query, language, etc...)"""
-
-    __slots__ = 'query', 'engineref_list', 'categories', 'lang', 'safesearch', 'pageno', 'time_range',\
-                'timeout_limit', 'external_bang'
-
-    def __init__(self,
-                 query: str,
-                 engineref_list: typing.List[EngineRef],
-                 categories: typing.List[str],
-                 lang: str,
-                 safesearch: int,
-                 pageno: int,
-                 time_range: typing.Optional[str],
-                 timeout_limit: typing.Optional[float]=None,
-                 external_bang: typing.Optional[str]=None):
-        self.query = query
-        self.engineref_list = engineref_list
-        self.categories = categories
-        self.lang = lang
-        self.safesearch = safesearch
-        self.pageno = pageno
-        self.time_range = time_range
-        self.timeout_limit = timeout_limit
-        self.external_bang = external_bang
-
-    def __repr__(self):
-        return "SearchQuery({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})".\
-               format(self.query, self.engineref_list, self.categories, self.lang, self.safesearch,
-                      self.pageno, self.time_range, self.timeout_limit, self.external_bang)
-
-    def __eq__(self, other):
-        return self.query == other.query\
-            and self.engineref_list == other.engineref_list\
-            and self.categories == self.categories\
-            and self.lang == other.lang\
-            and self.safesearch == other.safesearch\
-            and self.pageno == other.pageno\
-            and self.time_range == other.time_range\
-            and self.timeout_limit == other.timeout_limit\
-            and self.external_bang == other.external_bang
+    if enable_checker:
+        initialize_checker()
 
 
 class Search:

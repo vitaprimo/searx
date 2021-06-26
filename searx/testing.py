@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Shared testing code."""
 
-# pylint: disable=missing-function-docstring
+# pylint: disable=missing-function-docstring,consider-using-with
 
 import os
 import subprocess
@@ -11,7 +11,7 @@ import traceback
 from os.path import dirname, join, abspath, realpath
 
 from splinter import Browser
-from unittest2 import TestCase
+import aiounittest
 
 
 class SearxTestLayer:
@@ -82,7 +82,7 @@ def run_robot_tests(tests):
             test(browser)
 
 
-class SearxTestCase(TestCase):
+class SearxTestCase(aiounittest.AsyncTestCase):
     """Base test case for non-robot tests."""
 
     layer = SearxTestLayer

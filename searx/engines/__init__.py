@@ -26,8 +26,9 @@ from operator import itemgetter
 from searx import settings
 from searx import logger
 from searx.data import ENGINES_LANGUAGES
-from searx.poolrequests import get, get_proxy_cycles
-from searx.utils import load_module, match_language, get_engine_from_settings
+from searx.exceptions import SearxEngineResponseException
+from searx.network import get, initialize as initialize_network, set_context_network_name
+from searx.utils import load_module, match_language, get_engine_from_settings, gen_useragent
 
 
 logger = logger.getChild('engines')
@@ -44,12 +45,12 @@ babel_langs = [lang_parts[0] + '-' + lang_parts[-1] if len(lang_parts) > 1 else 
 engine_shortcuts = {}
 engine_default_args = {'paging': False,
                        'categories': ['general'],
-                       'language_support': True,
                        'supported_languages': [],
                        'safesearch': False,
                        'timeout': settings['outgoing']['request_timeout'],
                        'shortcut': '-',
                        'disabled': False,
+                       'enable_http': False,
                        'suspend_end_time': 0,
                        'continuous_errors': 0,
                        'time_range_support': False,
@@ -88,8 +89,6 @@ def load_engine(engine_data):
                 engine.categories = []
             else:
                 engine.categories = list(map(str.strip, param_value.split(',')))
-        elif param_name == 'proxies':
-            engine.proxies = get_proxy_cycles(param_value)
         else:
             setattr(engine, param_name, param_value)
 
@@ -127,10 +126,17 @@ def load_engine(engine_data):
 
         setattr(engine, 'language_aliases', language_aliases)
 
+    # language_support
+    setattr(engine, 'language_support', len(getattr(engine, 'supported_languages', [])) > 0)
+
     # assign language fetching method if auxiliary method exists
     if hasattr(engine, '_fetch_supported_languages'):
+        headers = {
+            'User-Agent': gen_useragent(),
+            'Accept-Language': 'ja-JP,ja;q=0.8,en-US;q=0.5,en;q=0.3',  # bing needs a non-English language
+        }
         setattr(engine, 'fetch_supported_languages',
-                lambda: engine._fetch_supported_languages(get(engine.supported_languages_url)))
+                lambda: engine._fetch_supported_languages(get(engine.supported_languages_url, headers=headers)))
 
     engine.stats = {
         'sent_search_count': 0,  # sent search
@@ -281,10 +287,14 @@ def load_engines(engine_list):
 
 def initialize_engines(engine_list):
     load_engines(engine_list)
+    initialize_network(engine_list, settings['outgoing'])
 
     def engine_init(engine_name, init_fn):
         try:
+            set_context_network_name(engine_name)
             init_fn(get_engine_from_settings(engine_name))
+        except SearxEngineResponseException as exc:
+            logger.warn('%s engine: Fail to initialize // %s', engine_name, exc)
         except Exception:
             logger.exception('%s engine: Fail to initialize', engine_name)
         else:
@@ -296,34 +306,3 @@ def initialize_engines(engine_list):
             if init_fn:
                 logger.debug('%s engine: Starting background initialization', engine_name)
                 threading.Thread(target=engine_init, args=(engine_name, init_fn)).start()
-
-        _set_https_support_for_engine(engine)
-
-
-def _set_https_support_for_engine(engine):
-    # check HTTPS support if it is not disabled
-    if engine.engine_type != 'offline' and not hasattr(engine, 'https_support'):
-        params = engine.request('http_test', {
-            'method': 'GET',
-            'headers': {},
-            'data': {},
-            'url': '',
-            'cookies': {},
-            'verify': True,
-            'auth': None,
-            'pageno': 1,
-            'time_range': None,
-            'language': '',
-            'safesearch': False,
-            'is_test': True,
-            'category': 'files',
-            'raise_for_status': True,
-        })
-
-        if 'url' not in params:
-            return
-
-        parsed_url = urlparse(params['url'])
-        https_support = parsed_url.scheme == 'https'
-
-        setattr(engine, 'https_support', https_support)

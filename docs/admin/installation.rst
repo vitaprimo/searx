@@ -39,12 +39,17 @@ install from ``root``, take into account that the scripts are creating a
 these new created users do need read access to the clone of searx, which is not
 the case if you clone into a folder below ``/root``.
 
-
 .. code:: bash
 
    $ cd ~/Downloads
    $ git clone https://github.com/searx/searx searx
    $ cd searx
+
+.. sidebar:: further read
+
+   - :ref:`toolboxing`
+   - :ref:`update searx`
+   - :ref:`inspect searx`
 
 **Install** :ref:`searx service <searx.sh>`
 
@@ -76,6 +81,6 @@ If all services are running fine, you can add it to your HTTP server:
 .. tip::
 
    About script's installation options have a look at chapter :ref:`toolboxing
-   setup`.  How to brand your instance see chapter :ref:`makefile setup`.  To
+   setup`.  How to brand your instance see chapter :ref:`settings global`.  To
    *stash* your instance's setup, `git stash`_ your clone's :origin:`Makefile`
    and :origin:`.config.sh` file .

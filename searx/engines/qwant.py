@@ -1,13 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 """
  Qwant (Web, Images, News, Social)
-
- @website     https://qwant.com/
- @provide-api not officially (https://api.qwant.com/api/search/)
-
- @using-api   yes
- @results     JSON
- @stable      yes
- @parse       url, title, content
 """
 
 from datetime import datetime
@@ -15,14 +8,22 @@ from json import loads
 from urllib.parse import urlencode
 from searx.utils import html_to_text, match_language
 from searx.exceptions import SearxEngineAPIException, SearxEngineCaptchaException
-from searx.raise_for_httperror import raise_for_httperror
+from searx.network import raise_for_httperror
 
+# about
+about = {
+    "website": 'https://www.qwant.com/',
+    "wikidata_id": 'Q14657870',
+    "official_api_documentation": None,
+    "use_official_api": True,
+    "require_api_key": False,
+    "results": 'JSON',
+}
 
 # engine dependent config
 categories = []
 paging = True
-language_support = True
-supported_languages_url = 'https://qwant.com/region'
+supported_languages_url = about['website']
 
 category_to_keyword = {'general': 'web',
                        'images': 'images',
@@ -124,15 +125,15 @@ def response(resp):
 def _fetch_supported_languages(resp):
     # list of regions is embedded in page as a js object
     response_text = resp.text
-    response_text = response_text[response_text.find('regionalisation'):]
-    response_text = response_text[response_text.find('{'):response_text.find(');')]
+    response_text = response_text[response_text.find('INITIAL_PROPS'):]
+    response_text = response_text[response_text.find('{'):response_text.find('</script>')]
 
     regions_json = loads(response_text)
 
-    supported_languages = {}
-    for lang in regions_json['languages'].values():
-        for country in lang['countries']:
-            lang_code = "{lang}-{country}".format(lang=lang['code'], country=country)
-            supported_languages[lang_code] = {'name': lang['name']}
+    supported_languages = []
+    for country, langs in regions_json['locales'].items():
+        for lang in langs['langs']:
+            lang_code = "{lang}-{country}".format(lang=lang, country=country)
+            supported_languages.append(lang_code)
 
     return supported_languages

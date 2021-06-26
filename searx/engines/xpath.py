@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 from lxml import html
 from urllib.parse import urlencode
 from searx.utils import extract_text, extract_url, eval_xpath, eval_xpath_list
@@ -12,6 +14,7 @@ suggestion_xpath = ''
 results_xpath = ''
 cached_xpath = ''
 cached_url = ''
+soft_max_redirects = 0
 
 # parameters for engines with paging support
 #
@@ -31,6 +34,7 @@ def request(query, params):
 
     params['url'] = search_url.format(**fp)
     params['query'] = query
+    params['soft_max_redirects'] = soft_max_redirects
 
     return params
 

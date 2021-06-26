@@ -42,7 +42,6 @@ argument                type        information
 ======================= =========== ========================================================
 categories              list        pages, in which the engine is working
 paging                  boolean     support multible pages
-language_support        boolean     support language choosing
 time_range_support      boolean     support search time range
 engine_type             str         ``online`` by default, other possibles values are 
                                     ``offline``, ``online_dictionnary``, ``online_currency``
@@ -59,6 +58,8 @@ argument                type        information
 name                    string      name of search-engine
 engine                  string      name of searx-engine
                                     (filename without ``.py``)
+enable_http             bool        enable HTTP
+                                    (by default only HTTPS is enabled).
 shortcut                string      shortcut of search-engine
 timeout                 string      specific timeout for search-engine
 display_error_messages  boolean     display error messages on the web UI
@@ -97,7 +98,6 @@ example code
    # engine dependent config
    categories = ['general']
    paging = True
-   language_support = True
 
 
 making a request
@@ -171,6 +171,7 @@ headers             set         HTTP header information
 data                set         HTTP data information
 cookies             set         HTTP cookies
 verify              bool        Performing SSL-Validity check
+allow_redirects     bool        Follow redirects
 max_redirects       int         maximum redirects, hard limit
 soft_max_redirects  int         maximum redirects, soft limit. Record an error but don't stop the engine
 raise_for_httperror bool        True by default: raise an exception if the HTTP code of response is >= 300

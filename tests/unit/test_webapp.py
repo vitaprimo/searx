@@ -3,14 +3,19 @@
 import json
 from urllib.parse import ParseResult
 from mock import Mock
-from searx import webapp
 from searx.testing import SearxTestCase
 from searx.search import Search
+import searx.engines
 
 
 class ViewsTestCase(SearxTestCase):
 
     def setUp(self):
+        # skip init function (no external HTTP request)
+        self.setattr4test(searx.engines, 'initialize_engines', searx.engines.load_engines)
+
+        from searx import webapp  # pylint disable=import-outside-toplevel
+
         webapp.app.config['TESTING'] = True  # to get better error messages
         self.app = webapp.app.test_client()
 
@@ -57,7 +62,8 @@ class ViewsTestCase(SearxTestCase):
                                                 results_number=lambda: 3,
                                                 results_length=lambda: len(test_results),
                                                 get_timings=lambda: timings,
-                                                redirect_url=None)
+                                                redirect_url=None,
+                                                engine_data={})
 
         self.setattr4test(Search, 'search', search_mock)
 
@@ -198,10 +204,23 @@ class ViewsTestCase(SearxTestCase):
             result.data
         )
 
+    def test_browser_locale(self):
+        result = self.app.get('/preferences', headers={'Accept-Language': 'zh-tw;q=0.8'})
+        self.assertEqual(result.status_code, 200)
+        self.assertIn(
+            b'<option value="zh_TW" selected="selected">',
+            result.data,
+            'Interface locale ignored browser preference.'
+        )
+        self.assertIn(
+            b'<option value="zh-TW" selected="selected">',
+            result.data,
+            'Search language ignored browser preference.'
+        )
+
     def test_stats(self):
         result = self.app.get('/stats')
-        self.assertEqual(result.status_code, 200)
-        self.assertIn(b'<h1>Engine stats</h1>', result.data)
+        self.assertEqual(result.status_code, 404)
 
     def test_robots_txt(self):
         result = self.app.get('/robots.txt')

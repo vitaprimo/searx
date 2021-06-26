@@ -3,7 +3,7 @@ import inspect
 import logging
 from json import JSONDecodeError
 from urllib.parse import urlparse
-from requests.exceptions import RequestException
+from httpx import HTTPError, HTTPStatusError
 from searx.exceptions import (SearxXPathSyntaxException, SearxEngineXPathException, SearxEngineAPIException,
                               SearxEngineAccessDeniedException)
 from searx import logger
@@ -47,44 +47,41 @@ class ErrorContext:
 def add_error_context(engine_name: str, error_context: ErrorContext) -> None:
     errors_for_engine = errors_per_engines.setdefault(engine_name, {})
     errors_for_engine[error_context] = errors_for_engine.get(error_context, 0) + 1
-    logger.debug('⚠️ %s: %s', engine_name, str(error_context))
+    logger.debug('%s: %s', engine_name, str(error_context))
 
 
 def get_trace(traces):
-    previous_trace = traces[-1]
     for trace in reversed(traces):
-        if trace.filename.endswith('searx/search.py'):
-            if previous_trace.filename.endswith('searx/poolrequests.py'):
-                return trace
-            if previous_trace.filename.endswith('requests/models.py'):
-                return trace
-            return previous_trace
-        previous_trace = trace
+        split_filename = trace.filename.split('/')
+        if '/'.join(split_filename[-3:-1]) == 'searx/engines':
+            return trace
+        if '/'.join(split_filename[-4:-1]) == 'searx/search/processors':
+            return trace
     return traces[-1]
 
 
-def get_hostname(exc: RequestException) -> typing.Optional[None]:
+def get_hostname(exc: HTTPError) -> typing.Optional[None]:
     url = exc.request.url
     if url is None and exc.response is not None:
         url = exc.response.url
     return urlparse(url).netloc
 
 
-def get_request_exception_messages(exc: RequestException)\
+def get_request_exception_messages(exc: HTTPError)\
         -> typing.Tuple[typing.Optional[str], typing.Optional[str], typing.Optional[str]]:
     url = None
     status_code = None
     reason = None
     hostname = None
-    if exc.request is not None:
+    if hasattr(exc, 'request') and exc.request is not None:
         url = exc.request.url
-    if url is None and exc.response is not None:
+    if url is None and hasattr(exc, 'response') and exc.respones is not None:
         url = exc.response.url
     if url is not None:
-        hostname = str(urlparse(url).netloc)
-    if exc.response is not None:
+        hostname = url.host
+    if isinstance(exc, HTTPStatusError):
         status_code = str(exc.response.status_code)
-        reason = exc.response.reason
+        reason = exc.response.reason_phrase
     return (status_code, reason, hostname)
 
 
@@ -95,7 +92,7 @@ def get_messages(exc, filename) -> typing.Tuple:
         return (str(exc), )
     if isinstance(exc, ValueError) and 'lxml' in filename:
         return (str(exc), )
-    if isinstance(exc, RequestException):
+    if isinstance(exc, HTTPError):
         return get_request_exception_messages(exc)
     if isinstance(exc, SearxXPathSyntaxException):
         return (exc.xpath_str, exc.message)
