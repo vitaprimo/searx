@@ -6,18 +6,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Developer documentation &#8212; Searx Documentation (Searx-0.18.0.tex)</title>
-    <link rel="stylesheet" href="../_static/searx.css" type="text/css" />
+    <title>Developer documentation &#8212; Searx Documentation (Searx-1.0.0.tex)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx_tabs/semantic-ui-2.4.1/segment.min.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx_tabs/semantic-ui-2.4.1/menu.min.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx_tabs/tabs.css" />
+    <link rel="stylesheet" href="../_static/searx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Development Quickstart" href="quickstart.html" />
@@ -40,7 +36,7 @@
         <li class="right" >
           <a href="../admin/buildhosts.html" title="Buildhosts"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Searx Documentation (Searx-0.18.0.tex)</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Searx Documentation (Searx-1.0.0.tex)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Developer documentation</a></li> 
       </ul>
     </div>  
@@ -86,15 +82,16 @@
 <li class="toctree-l2"><a class="reference internal" href="translation.html#update-translations">Update translations</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="makefile.html">Makefile Targets</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="makefile.html#makefile-setup">Makefile setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="makefile.html">Makefile</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="makefile.html#python-environment">Python environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="makefile.html#make-run"><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">run</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="makefile.html#make-clean"><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="makefile.html#make-docs-docs-live-docs-clean"><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs</span> <span class="pre">docs-live</span> <span class="pre">docs-clean</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="makefile.html#make-gh-pages"><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">gh-pages</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html#make-docs-docs-autobuild-docs-clean"><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs</span> <span class="pre">docs.autobuild</span> <span class="pre">docs.clean</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html#make-docs-gh-pages"><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs.gh-pages</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="makefile.html#make-test"><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="makefile.html#make-pylint"><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">pylint</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html#make-test-sh"><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test.sh</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html#make-test-pylint"><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test.pylint</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html#search-checker-engine-name"><code class="docutils literal notranslate"><span class="pre">search.checker.{engine</span> <span class="pre">name}</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="makefile.html#make-pybuild"><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">pybuild</span></code></a></li>
 </ul>
 </li>
@@ -140,9 +137,11 @@
   
     <li><a href="https://github.com/searx/searx/wiki">Wiki</a>
   
-    <li><a href="https://searx.space/">Public instances</a>
+    <li><a href="https://searx.space">Public instances</a>
   
     <li><a href="https://twitter.com/Searx_engine">Twitter</a>
+  
+    <li><a href="https://github.com/searx/searx/issues">Issue Tracker</a>
   </ul><h3>Navigation</h3>
 <ul>
   <li><a href="../index.html">Overview</a>
@@ -169,7 +168,7 @@
   
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015-2020, Adam Tauber, Noémi Ványi.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   <script src="../_static/version_warning_offset.js"></script>
 

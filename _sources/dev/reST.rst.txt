@@ -15,8 +15,8 @@ generated and deployed at :docs:`github.io <.>`.  For build prerequisites read
 :ref:`docs build`.
 
 The source files of Searx's documentation are located at :origin:`docs`.  Sphinx
-assumes source files to be encoded in UTF-8 by defaul.  Run :ref:`make docs-live
-<make docs-live>` to build HTML while editing.
+assumes source files to be encoded in UTF-8 by defaul.  Run :ref:`make docs.live
+<make docs.live>` to build HTML while editing.
 
 .. sidebar:: Further reading
 
@@ -319,6 +319,9 @@ To list all anchors of the inventory (e.g. ``python``) use:
 .. code:: sh
 
    $ python -m sphinx.ext.intersphinx https://docs.python.org/3/objects.inv
+   ...
+   $ python -m sphinx.ext.intersphinx https://searx.github.io/searx/objects.inv
+   ...
 
 Literal blocks
 ==============
@@ -1273,28 +1276,33 @@ Templating
 
 .. sidebar:: Build environment
 
-   All *generic-doc* tasks are running in the :ref:`build environment <make
-   pyenv>`.
+   All *generic-doc* tasks are running in the :ref:`make install`.
 
 Templating is suitable for documentation which is created generic at the build
-time.  The sphinx-jinja_ extension evaluates jinja_ templates in the :ref:`build
-environment <make pyenv>` (with searx modules installed).  We use this e.g. to
-build chapter: :ref:`engines generic`.  Below the jinja directive from the
+time.  The sphinx-jinja_ extension evaluates jinja_ templates in the :ref:`make
+install` (with searx modules installed).  We use this e.g. to build chapter:
+:ref:`engines generic`.  Below the jinja directive from the
 :origin:`docs/admin/engines.rst` is shown:
 
 .. literalinclude:: ../admin/engines.rst
    :language: reST
    :start-after: .. _configured engines:
 
-The context for the template is selected in the line ``.. jinja:: webapp``.  In
-sphinx's build configuration (:origin:`docs/conf.py`) the ``webapp`` context
-points to the name space of the python module: ``webapp``.
+The context for the template is selected in the line ``.. jinja:: searx``.  In
+sphinx's build configuration (:origin:`docs/conf.py`) the ``searx`` context
+contains the ``engines`` and ``plugins``.
 
 .. code:: py
 
-   from searx import webapp
+   import searx.search
+   import searx.engines
+   import searx.plugins
+   searx.search.initialize()
    jinja_contexts = {
-       'webapp': dict(**webapp.__dict__)
+      'searx': {
+         'engines': searx.engines.engines,
+         'plugins': searx.plugins.plugins
+      },
    }
 
 

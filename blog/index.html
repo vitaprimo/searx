@@ -6,22 +6,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Blog &#8212; Searx Documentation (Searx-0.18.0.tex)</title>
-    <link rel="stylesheet" href="../_static/searx.css" type="text/css" />
+    <title>Blog &#8212; Searx Documentation (Searx-1.0.0.tex)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx_tabs/semantic-ui-2.4.1/segment.min.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx_tabs/semantic-ui-2.4.1/menu.min.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx_tabs/tabs.css" />
+    <link rel="stylesheet" href="../_static/searx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Developing in Linux containers [202006]" href="lxcdev-202006.html" />
-    <link rel="prev" title="utils/standalone_searx.py" href="../utils/standalone_searx.py.html" />
+    <link rel="prev" title="utils/lxc.sh" href="../utils/lxc.sh.html" />
   <script>DOCUMENTATION_OPTIONS.URL_ROOT = '../';</script>
    
   </head><body>
@@ -38,9 +34,9 @@
           <a href="lxcdev-202006.html" title="Developing in Linux containers [202006]"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../utils/standalone_searx.py.html" title="utils/standalone_searx.py"
+          <a href="../utils/lxc.sh.html" title="utils/lxc.sh"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Searx Documentation (Searx-0.18.0.tex)</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Searx Documentation (Searx-1.0.0.tex)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Blog</a></li> 
       </ul>
     </div>  
@@ -93,6 +89,18 @@
 <li class="toctree-l2"><a class="reference internal" href="command-line-engines.html#acknowledgement">Acknowledgement</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="search-indexer-engines.html">Query your local search engines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="search-indexer-engines.html#configuring-searx-for-search-engines">Configuring searx for search engines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="search-indexer-engines.html#next-steps">Next steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="search-indexer-engines.html#acknowledgement">Acknowledgement</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sql-engines.html">Query SQL servers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sql-engines.html#configure-the-engines">Configure the engines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sql-engines.html#next-steps">Next steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sql-engines.html#acknowledgement">Acknowledgement</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -118,14 +126,16 @@
   
     <li><a href="https://github.com/searx/searx/wiki">Wiki</a>
   
-    <li><a href="https://searx.space/">Public instances</a>
+    <li><a href="https://searx.space">Public instances</a>
   
     <li><a href="https://twitter.com/Searx_engine">Twitter</a>
+  
+    <li><a href="https://github.com/searx/searx/issues">Issue Tracker</a>
   </ul><h3>Navigation</h3>
 <ul>
   <li><a href="../index.html">Overview</a>
     <ul>
-          <li>Previous: <a href="../utils/standalone_searx.py.html" title="previous chapter"><code class="docutils literal notranslate"><span class="pre">utils/standalone_searx.py</span></code></a>
+          <li>Previous: <a href="../utils/lxc.sh.html" title="previous chapter"><code class="docutils literal notranslate"><span class="pre">utils/lxc.sh</span></code></a>
           <li>Next: <a href="lxcdev-202006.html" title="next chapter">Developing in Linux containers [202006]</a>
     </ul>
   </li>
@@ -147,7 +157,7 @@
   
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015-2020, Adam Tauber, Noémi Ványi.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   <script src="../_static/version_warning_offset.js"></script>
 

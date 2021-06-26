@@ -27,7 +27,8 @@ First, searx will try to load settings.yml from these locations:
 1. the full path specified in the ``SEARX_SETTINGS_PATH`` environment variable.
 2. ``/etc/searx/settings.yml``
 
-If these files don't exist (or are empty or can't be read), searx uses the :origin:`searx/settings.yml` file.
+If these files don't exist (or are empty or can't be read), searx uses the
+:origin:`searx/settings.yml` file.
 
 
 .. _settings global:
@@ -35,15 +36,45 @@ If these files don't exist (or are empty or can't be read), searx uses the :orig
 Global Settings
 ===============
 
+``general:``
+------------
+
 .. code:: yaml
 
    general:
        debug : False # Debug mode, only for development
        instance_name : "searx" # displayed name
+       git_url: https://github.com/searx/searx
+       git_branch: master
+       issue_url: https://github.com/searx/searx/issues
+       docs_url: https://searx.github.io/searx
+       public_instances: https://searx.space
+       contact_url: False # mailto:contact@example.com
+       wiki_url: https://github.com/searx/searx/wiki
+       twitter_url: https://twitter.com/Searx_engine
 
 ``debug`` :
   Allow a more detailed log if you run searx directly. Display *detailed* error
   messages in the browser too, so this must be deactivated in production.
+
+``contact_url``:
+  Contact ``mailto:`` address or WEB form.
+
+``git_url`` and ``git_branch``:
+  Changes this, to point to your searx fork (branch).
+
+``docs_url``
+  If you host your own documentation, change this URL.
+
+``wiki_url``:
+  Link to your wiki (or ``False``)
+
+``twitter_url``:
+  Link to your tweets (or ``False``)
+
+
+``server:``
+-----------
 
 .. code:: yaml
 
@@ -90,6 +121,8 @@ Global Settings
 ``default_http_headers``:
   Set additional HTTP headers, see `#755 <https://github.com/searx/searx/issues/715>`__
 
+``outgoing:``
+-------------
 
 .. code:: yaml
 
@@ -97,14 +130,12 @@ Global Settings
        request_timeout : 2.0        # default timeout in seconds, can be override by engine
        # max_request_timeout: 10.0  # the maximum timeout in seconds
        useragent_suffix : ""        # informations like an email address to the administrator
-       pool_connections : 100       # Number of different hosts
-       pool_maxsize : 10            # Number of simultaneous requests by host
+       pool_connections : 100       # Maximum number of allowable connections, or None for no limits. The default is 100.
+       pool_maxsize : 10            # Number of allowable keep-alive connections, or None to always allow. The default is 10.
+       enable_http2: True           # See https://www.python-httpx.org/http2/
    # uncomment below section if you want to use a proxy
    #    proxies:
-   #        http:
-   #            - http://proxy1:8080
-   #            - http://proxy2:8080
-   #        https:
+   #        all://:
    #            - http://proxy1:8080
    #            - http://proxy2:8080
    # uncomment below section only if you have more than one network interface
@@ -112,6 +143,7 @@ Global Settings
    #    source_ips:
    #        - 1.1.1.1
    #        - 1.1.1.2
+   #        - fe80::/126
 
 
 ``request_timeout`` :
@@ -124,20 +156,50 @@ Global Settings
   Suffix to the user-agent searx uses to send requests to others engines.  If an
   engine wish to block you, a contact info here may be useful to avoid that.
 
-.. _requests proxies: https://requests.readthedocs.io/en/latest/user/advanced/#proxies
-.. _PySocks: https://pypi.org/project/PySocks/
+``keepalive_expiry``:
+  Number of seconds to keep a connection in the pool. By default 5.0 seconds.
+
+.. _httpx proxies: https://www.python-httpx.org/advanced/#http-proxying
 
 ``proxies`` :
-  Define one or more proxies you wish to use, see `requests proxies`_.
+  Define one or more proxies you wish to use, see `httpx proxies`_.
   If there are more than one proxy for one protocol (http, https),
   requests to the engines are distributed in a round-robin fashion.
 
-  - Proxy: `see <https://2.python-requests.org/en/latest/user/advanced/#proxies>`__.
-  - SOCKS proxies are also supported: `see <https://2.python-requests.org/en/latest/user/advanced/#socks>`__
-
 ``source_ips`` :
   If you use multiple network interfaces, define from which IP the requests must
-  be made. This parameter is ignored when ``proxies`` is set.
+  be made. Example:
+
+  * ``0.0.0.0`` any local IPv4 address.
+  * ``::`` any local IPv6 address.
+  * ``192.168.0.1``
+  * ``[ 192.168.0.1, 192.168.0.2 ]`` these two specific IP addresses
+  * ``fe80::60a2:1691:e5a2:ee1f``
+  * ``fe80::60a2:1691:e5a2:ee1f/126`` all IP addresses in this network.
+  * ``[ 192.168.0.1, fe80::/126 ]``
+
+``retries`` :
+  Number of retry in case of an HTTP error.
+  On each retry, searx uses an different proxy and source ip.
+
+``retry_on_http_error`` :
+  Retry request on some HTTP status code.
+
+  Example:
+
+  * ``true`` : on HTTP status code between 400 and 599.
+  * ``403`` : on HTTP status code 403.
+  * ``[403, 429]``: on HTTP status code 403 and 429.
+
+``enable_http2`` :
+  Enable by default. Set to ``False`` to disable HTTP/2.
+
+``max_redirects`` :
+  30 by default. Maximum redirect before it is an error.
+
+
+``locales:``
+------------
 
 .. code:: yaml
 
@@ -179,6 +241,13 @@ Engine settings
      api_key : 'apikey'
      disabled : True
      language : en_US
+     #enable_http: False
+     #enable_http2: False
+     #retries: 1
+     #retry_on_http_error: True # or 403 or [404, 429]
+     #max_connections: 100
+     #max_keepalive_connections: 10
+     #keepalive_expiry: 5.0
      #proxies:
      #    http:
      #        - http://proxy1:8080
@@ -233,6 +302,12 @@ Engine settings
 ``display_error_messages`` : default ``True``
   When an engine returns an error, the message is displayed on the user interface.
 
+``network``: optional
+  Use the network configuration from another engine.
+  In addition, there are two default networks:
+  * ``ipv4`` set ``local_addresses`` to ``0.0.0.0`` (use only IPv4 local addresses)
+  * ``ipv6`` set ``local_addresses`` to ``::`` (use only IPv6 local addresses)
+
 .. note::
 
    A few more options are possible, but they are pretty specific to some
@@ -244,61 +319,76 @@ Engine settings
 use_default_settings
 ====================
 
-.. note::
+.. sidebar:: ``use_default_settings: True``
 
-   If searx is cloned from a git repository, most probably there is no need to have an user settings.
+   - :ref:`settings location`
+   - :ref:`use_default_settings.yml`
+   - :origin:`/etc/searx/settings.yml <utils/templates/etc/searx/use_default_settings.yml>`
 
-The user defined settings.yml can relied on the default configuration :origin:`searx/settings.yml` using ``use_default_settings: True``.
+The user defined ``settings.yml`` is loaded from the :ref:`settings location`
+and can relied on the default configuration :origin:`searx/settings.yml` using:
 
-In the following example, the actual settings are the default settings defined in :origin:`searx/settings.yml` with the exception of the ``secret_key`` and the ``bind_address``:
+ ``use_default_settings: True``
 
-.. code-block:: yaml
+``server:``
+  In the following example, the actual settings are the default settings defined
+  in :origin:`searx/settings.yml` with the exception of the ``secret_key`` and
+  the ``bind_address``:
 
-  use_default_settings: True
-  server:
-      secret_key: "uvys6bRhKHUdFF5CqbJonSDSRN8H0sCBziNSrDGNVdpz7IeZhveVart3yvghoKHA"
-      bind_address: "0.0.0.0"
+  .. code-block:: yaml
 
-With ``use_default_settings: True``, each settings can be override in a similar way, the ``engines`` section is merged according to the engine ``name``.
+    use_default_settings: True
+    server:
+        secret_key: "uvys6bRhKHUdFF5CqbJonSDSRN8H0sCBziNSrDGNVdpz7IeZhveVart3yvghoKHA"
+        bind_address: "0.0.0.0"
 
-In this example, searx will load all the engine and the arch linux wiki engine has a :ref:`token<private engines>`:
+``engines:``
+  With ``use_default_settings: True``, each settings can be override in a
+  similar way, the ``engines`` section is merged according to the engine
+  ``name``.  In this example, searx will load all the engine and the arch linux
+  wiki engine has a :ref:`token<private engines>`:
 
-.. code-block:: yaml
+  .. code-block:: yaml
 
-  use_default_settings: True
-  server:
-      secret_key: "uvys6bRhKHUdFF5CqbJonSDSRN8H0sCBziNSrDGNVdpz7IeZhveVart3yvghoKHA"
-  engines:
-    - name: arch linux wiki
-      tokens: ['$ecretValue']
+    use_default_settings: True
+    server:
+        secret_key: "uvys6bRhKHUdFF5CqbJonSDSRN8H0sCBziNSrDGNVdpz7IeZhveVart3yvghoKHA"
+    engines:
+      - name: arch linux wiki
+        tokens: ['$ecretValue']
 
-It is possible to remove some engines from the default settings. The following example is similar to the above one, but searx doesn't load the the google engine:
+``engines:`` / ``remove:``
+  It is possible to remove some engines from the default settings. The following
+  example is similar to the above one, but searx doesn't load the the google
+  engine:
 
-.. code-block:: yaml
+  .. code-block:: yaml
 
-  use_default_settings:
-      engines:
-         remove:
-           - google
-  server:
-      secret_key: "uvys6bRhKHUdFF5CqbJonSDSRN8H0sCBziNSrDGNVdpz7IeZhveVart3yvghoKHA"
-  engines:
-    - name: arch linux wiki
-      tokens: ['$ecretValue']
+    use_default_settings:
+        engines:
+           remove:
+             - google
+    server:
+        secret_key: "uvys6bRhKHUdFF5CqbJonSDSRN8H0sCBziNSrDGNVdpz7IeZhveVart3yvghoKHA"
+    engines:
+      - name: arch linux wiki
+        tokens: ['$ecretValue']
 
-As an alternative, it is possible to specify the engines to keep. In the following example, searx has only two engines:
+``engines:`` / ``keep_only:``
+  As an alternative, it is possible to specify the engines to keep. In the
+  following example, searx has only two engines:
 
-.. code-block:: yaml
+  .. code-block:: yaml
 
-  use_default_settings:
-      engines:
-         keep_only:
-           - google
-           - duckduckgo
-  server:
-      secret_key: "uvys6bRhKHUdFF5CqbJonSDSRN8H0sCBziNSrDGNVdpz7IeZhveVart3yvghoKHA"
-  engines:
-    - name: google
-      tokens: ['$ecretValue']
-    - name: duckduckgo
-      tokens: ['$ecretValue']
+    use_default_settings:
+        engines:
+           keep_only:
+             - google
+             - duckduckgo
+    server:
+        secret_key: "uvys6bRhKHUdFF5CqbJonSDSRN8H0sCBziNSrDGNVdpz7IeZhveVart3yvghoKHA"
+    engines:
+      - name: google
+        tokens: ['$ecretValue']
+      - name: duckduckgo
+        tokens: ['$ecretValue']

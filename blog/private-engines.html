@@ -6,18 +6,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Limit access to your searx engines &#8212; Searx Documentation (Searx-0.18.0.tex)</title>
-    <link rel="stylesheet" href="../_static/searx.css" type="text/css" />
+    <title>Limit access to your searx engines &#8212; Searx Documentation (Searx-1.0.0.tex)</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx_tabs/semantic-ui-2.4.1/segment.min.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx_tabs/semantic-ui-2.4.1/menu.min.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx_tabs/tabs.css" />
+    <link rel="stylesheet" href="../_static/searx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Running shell commands to fetch results" href="command-line-engines.html" />
@@ -40,7 +36,7 @@
         <li class="right" >
           <a href="intro-offline.html" title="Preparation for offline engines"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Searx Documentation (Searx-0.18.0.tex)</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Searx Documentation (Searx-1.0.0.tex)</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Blog</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Limit access to your searx engines</a></li> 
       </ul>
@@ -65,10 +61,10 @@ of strings. If the user making a request presents one of the tokens
 of an engine, they can access information about the engine
 and make search requests.</p>
 <p>Example configuration to restrict access to the Arch Linux Wiki engine:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span> <span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">arch linux wiki</span>
-  <span class="l l-Scalar l-Scalar-Plain">engine</span> <span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">archlinux</span>
-  <span class="l l-Scalar l-Scalar-Plain">shortcut</span> <span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">al</span>
-  <span class="l l-Scalar l-Scalar-Plain">tokens</span> <span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span> <span class="s">&#39;my-secret-token&#39;</span> <span class="p p-Indicator">]</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">name </span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">arch linux wiki</span>
+  <span class="nt">engine </span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">archlinux</span>
+  <span class="nt">shortcut </span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">al</span>
+  <span class="nt">tokens </span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="s">&#39;my-secret-token&#39;</span> <span class="p p-Indicator">]</span>
 </pre></div>
 </div>
 <p>Unless a user has configured the right token, the engine is going
@@ -123,9 +119,11 @@ and come up with new solutions which fit your use case.</p>
   
     <li><a href="https://github.com/searx/searx/wiki">Wiki</a>
   
-    <li><a href="https://searx.space/">Public instances</a>
+    <li><a href="https://searx.space">Public instances</a>
   
     <li><a href="https://twitter.com/Searx_engine">Twitter</a>
+  
+    <li><a href="https://github.com/searx/searx/issues">Issue Tracker</a>
   </ul><h3>Navigation</h3>
 <ul>
   <li><a href="../index.html">Overview</a>
@@ -155,7 +153,7 @@ and come up with new solutions which fit your use case.</p>
   
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015-2020, Adam Tauber, Noémi Ványi.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   <script src="../_static/version_warning_offset.js"></script>
 
